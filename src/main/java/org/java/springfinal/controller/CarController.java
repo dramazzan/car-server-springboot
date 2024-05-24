@@ -44,4 +44,9 @@ public class CarController {
         return carService.buyCar(id);
     }
 
+    @PostMapping("/{userId}/buy/{carId}")
+    public void buy_car(@PathVariable Long userId , Long carId){
+        carService.buy_Car(userId, carId);
+    }
+
 }

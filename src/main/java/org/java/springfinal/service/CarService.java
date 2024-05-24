@@ -2,15 +2,19 @@ package org.java.springfinal.service;
 
 import lombok.RequiredArgsConstructor;
 import org.java.springfinal.model.Car;
+import org.java.springfinal.model.User;
 import org.java.springfinal.repository.CarRepository;
+import org.java.springfinal.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CarService {
     private final CarRepository carRepository;
+    private final UserRepository userRepository;
 
     public List<Car> getCarList() {
         return carRepository.findAll();
@@ -53,4 +57,23 @@ public class CarService {
         carRepository.save(car);
         return car.getBrand() + " bought successfully";
     }
+
+
+    public void buy_Car(Long userId , Long carId){
+        Optional<Car> carOptional = carRepository.findById(carId);
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if(carOptional.isPresent() && userOptional.isPresent()){
+            User user = userOptional.get();
+            Car car = carOptional.get();
+
+            car.setUser(user);
+            car.setAmount(car.getAmount() - 1);
+            carRepository.save(car);
+
+        }else{
+            throw new RuntimeException("Car or User not found");
+        }
+    }
+
 }
