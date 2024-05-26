@@ -72,23 +72,34 @@ public class CarService {
         Optional<User> userOptional = userRepository.findById(userId);
         Optional<Car> carOptional = carRepository.findById(carId);
 
-        if(carOptional.isPresent() && userOptional.isPresent()){
-            User user = userOptional.get();
-            Car car = carOptional.get();
-            Order order = new Order();
-            if(car.getAmount() <= 0){
-                return car.getBrand() + " is out of stock";
-            }
-            order.setUser(user);
-            order.setCar(car);
-            order.setDateTime(LocalDateTime.now());
-            car.setAmount(car.getAmount() - 1);
-            orderRepository.save(order);
-            carRepository.save(car);
-            return car.getBrand() + " bought successfully";
+        if (!userOptional.isPresent()) {
+            return "User not found";
         }
-        return "User or car not found";
+
+        if (!carOptional.isPresent()) {
+            return "Car not found";
+        }
+
+        User user = userOptional.get();
+        Car car = carOptional.get();
+
+        if (car.getAmount() <= 0) {
+            return car.getBrand() + " is out of stock";
+        }
+
+        Order order = new Order();
+        order.setUser(user);
+        order.setCar(car);
+        order.setDateTime(LocalDateTime.now());
+
+        car.setAmount(car.getAmount() - 1);
+
+        orderRepository.save(order);
+        carRepository.save(car);
+
+        return car.getBrand() + " bought successfully";
     }
+
 
 
 }
