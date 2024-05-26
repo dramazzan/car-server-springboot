@@ -19,9 +19,4 @@ public class Car {
     private int year;
     private int amount;
     private int price;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
 }

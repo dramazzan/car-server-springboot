@@ -29,9 +29,10 @@ public class User implements UserDetails {
     @Column(name = "role")
     private Role role;
 
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , orphanRemoval = true)
-    private List<Car> cars;
+    private String token = "";
 
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

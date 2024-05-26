@@ -2,11 +2,14 @@ package org.java.springfinal.service;
 
 import lombok.RequiredArgsConstructor;
 import org.java.springfinal.model.Car;
+import org.java.springfinal.model.Order;
 import org.java.springfinal.model.User;
 import org.java.springfinal.repository.CarRepository;
+import org.java.springfinal.repository.OrderRepository;
 import org.java.springfinal.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,9 +18,15 @@ import java.util.Optional;
 public class CarService {
     private final CarRepository carRepository;
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
 
     public List<Car> getCarList() {
-        return carRepository.findAll();
+        try {
+            return carRepository.findAll();
+        }catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
     }
 
     public Car getCar(Long id){
@@ -48,32 +57,38 @@ public class CarService {
     }
 
 
-    public String buyCar(Long id) {
-        Car car = carRepository.getCarById(id);
-        if(car.getAmount() <= 0){
-            return car.getBrand() + " is out of stock";
-        }
-        car.setAmount(car.getAmount() - 1);
-        carRepository.save(car);
-        return car.getBrand() + " bought successfully";
-    }
+//    public String buyCar(Long id) {
+//        Car car = carRepository.getCarById(id);
+//        if(car.getAmount() <= 0){
+//            return car.getBrand() + " is out of stock";
+//        }
+//        car.setAmount(car.getAmount() - 1);
+//        carRepository.save(car);
+//        return car.getBrand() + " bought successfully";
+//    }
 
 
-    public void buy_Car(Long userId , Long carId){
-        Optional<Car> carOptional = carRepository.findById(carId);
+    public String buyCar(Long userId, Long carId) {
         Optional<User> userOptional = userRepository.findById(userId);
+        Optional<Car> carOptional = carRepository.findById(carId);
 
         if(carOptional.isPresent() && userOptional.isPresent()){
             User user = userOptional.get();
             Car car = carOptional.get();
-
-            car.setUser(user);
+            Order order = new Order();
+            if(car.getAmount() <= 0){
+                return car.getBrand() + " is out of stock";
+            }
+            order.setUser(user);
+            order.setCar(car);
+            order.setDateTime(LocalDateTime.now());
             car.setAmount(car.getAmount() - 1);
+            orderRepository.save(order);
             carRepository.save(car);
-
-        }else{
-            throw new RuntimeException("Car or User not found");
+            return car.getBrand() + " bought successfully";
         }
+        return "User or car not found";
     }
+
 
 }

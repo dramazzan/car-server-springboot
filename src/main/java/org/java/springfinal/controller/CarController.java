@@ -2,7 +2,11 @@ package org.java.springfinal.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.java.springfinal.model.Car;
+import org.java.springfinal.model.User;
 import org.java.springfinal.service.CarService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +30,7 @@ public class CarController {
 
     @PostMapping("/addcar")
     public String addCar(@RequestBody Car car) {
+        System.out.println(car);
         return carService.addCar(car);
     }
 
@@ -39,14 +44,15 @@ public class CarController {
         return carService.updateCar(id, car);
     }
 
-    @PostMapping("/buycar/{id}")
-    public String buyCar(@PathVariable Long id) {
-        return carService.buyCar(id);
+//    @PostMapping("/buycar/{id}")
+//    public String buyCar(@PathVariable Long id) {
+//        return carService.buyCar(id);
+//    }
+
+    @GetMapping("/buy/{carId}")
+    public String buyCar(@AuthenticationPrincipal User user, @PathVariable Long carId){
+        return carService.buyCar(user.getId(), carId);
     }
 
-    @PostMapping("/{userId}/buy/{carId}")
-    public void buy_car(@PathVariable Long userId , Long carId){
-        carService.buy_Car(userId, carId);
-    }
 
 }
