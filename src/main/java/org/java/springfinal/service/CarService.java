@@ -1,5 +1,6 @@
 package org.java.springfinal.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.java.springfinal.model.Car;
 import org.java.springfinal.model.Order;
@@ -39,12 +40,21 @@ public class CarService {
         return car.getBrand() + " added successfully";
     }
 
+
+    @Transactional
     public String deleteCar(Long id) {
-        Order order = orderRepository.findByCarId(id);
-        orderRepository.delete(order);
-        Car car = carRepository.getCarById(id);
-        carRepository.deleteById(id);
-        return car.getBrand() + " deleted successfully";
+        List<Order> orders = orderRepository.findByCarId(id);
+        for (Order order : orders) {
+            orderRepository.delete(order);
+        }
+        Optional<Car> carOptional = carRepository.findById(id);
+        if (carOptional.isPresent()) {
+            Car car = carOptional.get();
+            carRepository.deleteById(id);
+            return car.getBrand() + " deleted successfully";
+        } else {
+            return "Car not found";
+        }
     }
 
     public String updateCar(Long id , Car updatedCar){
