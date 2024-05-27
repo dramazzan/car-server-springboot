@@ -34,7 +34,7 @@ public class CarController {
         return carService.addCar(car);
     }
 
-    @PostMapping("/deletecar/{id}")
+    @GetMapping("/deletecar/{id}")
     public String deleteCar(@PathVariable Long id) {
         return carService.deleteCar(id);
     }

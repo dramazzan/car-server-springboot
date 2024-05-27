@@ -50,8 +50,11 @@ public class AuthController {
             return user;
         }
         return null;
+    }
 
-
+    @GetMapping("/logout")
+    public void logout(){
+        authService.logoutUser();
     }
 
 }

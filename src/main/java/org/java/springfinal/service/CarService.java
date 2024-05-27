@@ -40,6 +40,8 @@ public class CarService {
     }
 
     public String deleteCar(Long id) {
+        Order order = orderRepository.findByCarId(id);
+        orderRepository.delete(order);
         Car car = carRepository.getCarById(id);
         carRepository.deleteById(id);
         return car.getBrand() + " deleted successfully";
