@@ -68,7 +68,7 @@ public class CarService {
         return carBrand + " updated successfully";
     }
 
-
+//
 //    public String buyCar(Long id) {
 //        Car car = carRepository.getCarById(id);
 //        if(car.getAmount() <= 0){
